@@ -26,6 +26,16 @@ cd "$APP_DIR"
 echo "ls (in $APP_DIR)"
 ls -la
 
+
+echo "---"
+cat .gitmodules
+
+echo "-----> Adding PAT"
+sed -i -e "s/https:\/\/github.com/https:\/\/$GIT_TOKEN@github.com/" ./.gitmodules
+
+echo "---"
+cat .gitmodules
+
 exit 1
 
 
