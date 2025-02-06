@@ -15,6 +15,7 @@ fi
 cd "$APP_DIR"
 
 # remove existing .gitmodules, we'll check out it again
+echo "removing .gitmodules"
 rm .gitmodules
 
 # create an empty repo to fetch into
