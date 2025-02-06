@@ -19,6 +19,7 @@ echo "removing .gitmodules"
 rm .gitmodules
 
 # create an empty repo to fetch into
+echo "creating e mpty repo"
 git init -q
 
 # enable sparse checkouts, this will avoid checking out
@@ -27,9 +28,11 @@ git config core.sparseCheckout true
 echo ".gitmodules" > .git/info/sparse-checkout
 
 # add the repo as a remote and fetch the repo's history
+echo "adding origin - $GIT_REPO_URL"
 git remote add origin "$GIT_REPO_URL"
 
 # checkout the revision that's being deployed
+echo "fetching, checking out"
 git fetch -q --depth 1 origin -a > /dev/null
 git checkout -q ${SOURCE_VERSION:-master} > /dev/null
 echo "-----> Fetched shallow history from $GIT_REPO_URL"
