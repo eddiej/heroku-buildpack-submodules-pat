@@ -36,6 +36,9 @@ sed -i -e "s/https:\/\/github.com/https:\/\/$GIT_TOKEN@github.com/" ./.gitmodule
 echo "---"
 cat .gitmodules
 
+echo "--- init submodules. "
+git submodule -q update --init --recursive
+
 exit 1
 
 
