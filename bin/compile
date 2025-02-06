@@ -14,14 +14,33 @@ fi
 # make sure we're in the root of the app dir
 cd "$APP_DIR"
 
-# ensure the .gitsubmodules file is there
-echo "-----> Initializing submodules"
-git submodule init
+# remove existing .gitmodules, we'll check out it again
+rm .gitmodules
 
-# replace SSH urls with HTTPS urls and include the token
-echo "-----> Redirecting submodules to HTTPS"
-sed -i -e "s/git@github.com:/https:\/\/$GIT_TOKEN@github.com\//" ./.gitmodules
+# create an empty repo to fetch into
+git init -q
 
-# update the submodules
-echo "-----> Updating submodules"
+# enable sparse checkouts, this will avoid checking out
+# all the files in the repo, we'll only check out .gitmodules
+git config core.sparseCheckout true
+echo ".gitmodules" > .git/info/sparse-checkout
+
+# add the repo as a remote and fetch the repo's history
+git remote add origin "$GIT_REPO_URL"
+
+# checkout the revision that's being deployed
+git fetch -q --depth 1 origin -a > /dev/null
+git checkout -q ${SOURCE_VERSION:-master} > /dev/null
+echo "-----> Fetched shallow history from $GIT_REPO_URL"
+
+
+# Include the PAT in the submodule url
+echo "-----> Adding PAT"
+sed -i -e "s/https:\/\/github.com/https:\/\/$GIT_TOKEN@github.com/" ./.gitmodules
+
+
+# initialize all the submodules
 git submodule -q update --init --recursive
+echo "-----> Checked out all submodules"
+git submodule status | sed 's/^/       * /'
+
