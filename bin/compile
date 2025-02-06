@@ -3,6 +3,22 @@
 APP_DIR="$1"
 ENV_DIR="$3"
 
+
+echo "Configuring SSH for GitHub access..."
+
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+
+# Ensure known_hosts includes GitHub
+ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+chmod 644 ~/.ssh/known_hosts
+
+# Ensure SSH agent is running and the key is loaded
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+
+echo "SSH configured successfully."
+
 # load required environment variables
 GIT_TOKEN=$(<"$ENV_DIR/GIT_TOKEN")
 GIT_REPO_URL=$(<"$ENV_DIR/GIT_REPO_URL")
